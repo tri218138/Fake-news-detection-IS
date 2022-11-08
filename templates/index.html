@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <html lang="en">
+        <meta charset="utf-8">
+        <title>Dự đoán tin giả</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <!-- CSS only -->
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"> -->
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="header-left">
+                <span class="item-header" style="cursor:default; background-color: inherit;"><b>Phát hiện tin giả</b></span>
+            </div>
+            <div class="header-right">
+                <span class="item-header"><a href="http://github.com/tri218138">Github</a></span>
+                <span class="item-header"><a href="mailto:doantrancaotri1108@gmail.com">Liên hệ</a></span>
+            </div>
+        </div>
+        <div class="container">            
+            <div class="content">
+                <div class="row">
+                    <p id="introduction">Website nhận biết tin giả sử dụng thuật toán Học Máy</p>
+                </div>
+                <div class="row" style="justify-content: flex-end;">
+                    <span class="item-module" onclick="toggle_mode()">Đường dẫn</span>
+                    <span class="item-module" onclick="clear_area_content()">Xóa</span>
+                    <span class="item-module" onclick="show_example_list()" >Ví dụ</span>
+                </div>
+                <div class="row" style="justify-content: flex-end;">
+                    <ul id="examples" style="visibility:hidden; position:absolute;">
+                        <li onclick="get_example(1)">Ví dụ 1</li>
+                        <li onclick="get_example(2)">Ví dụ 2</li>
+                    </ul>
+                </div>
+                <div class="container" id="news" style="justify-content: center;">
+                    <form action="/" method="POST">
+                        <textarea id="titleInput" name="titleInput" rows="1" cols="80" 
+                        placeholder="Tiêu đề bài báo ..." onchange="this.style.color = 'black';"></textarea>
+                        <textarea id="authorInput" name="authorInput" rows="1" cols="70" 
+                        placeholder="Tác giả bài báo ..." onchange="this.style.color = 'black';"></textarea>
+                        <textarea id="textInput" name="textInput" rows="20" cols="150" 
+                        placeholder="Nội dung bài báo ..." onchange="this.style.color = 'black';"></textarea>
+                        <br>
+                        <button class="item-module" type="submit" name="predict">Dự đoán</button>
+                    </form>
+                </div>
+                {% if result %}
+                <p style="text-align:center; font-size: 30px;"><strong>Bài báo này là tin {{result}}</strong></p>
+                {% endif %}
+                {% if original %}
+                <p>Original: 
+                    {% for word in original.split(' ') %} 
+                        {% if word in dict %}
+                        {% set value = dict[word] %}
+                        <span style="color: {% if value > 0 %} rgba(255,0,0,{{[value,0.3]|max}}) {% else %} rgba(0,0,255,{{[value | abs, 0.3]|max}}) {% endif %};"><strong>{{word}}</strong></span>
+                        {% else %}
+                        <span style="color: rgba(0,0,0,0.7);">{{word}}</span>
+                        {% endif %}
+                    {% endfor %}
+                    <!-- {% for word, value in dict.items() %}
+                    <span style="color: {% if value > 0 %} rgba(255,0,0,{{[value,0.2]|max}}) {% elif value < 0 %} rgba(0,0,255,{{[value | abs, 0.2]|max}}) {% else %} rgba(0,0,0,0.5) {% endif %};"><strong>{{word}}</strong></span>
+                    {% endfor %} -->
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>
